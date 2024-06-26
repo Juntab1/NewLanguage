@@ -243,6 +243,7 @@ int main(int argc, char *argv[])
 }
 
 // Tommorow:
+// most likley a problem with the splitString so maybe change it
 
 // I want to make my programming language:
 // - not have any identifier like let or string or whatever like Python, this is great practice to be able to implement tests and such
