@@ -177,6 +177,7 @@ std::vector<Token> tokenize(const std::string &sourceCode)
             }
             else
             {
+                std::cout << src.front() << std::endl;
                 std::cout << "Unrecognized character found! " << std::endl;
                 exit(1);
             }
@@ -244,6 +245,7 @@ int main(int argc, char *argv[])
 
 // Tommorow:
 // most likley a problem with the splitString so maybe change it
+// "specific problem is when splitting stuff like ( and foo"
 
 // I want to make my programming language:
 // - not have any identifier like let or string or whatever like Python, this is great practice to be able to implement tests and such
