@@ -89,6 +89,42 @@ void INIT_RESERVED_IDENTIFIER()
     reservedIdentifier["let"] = TokenType::Let;
 }
 
+std::vector<std::string> splitString(const std::string &sourceCode){
+    std::vector<std::string> words;
+    std::string word;
+
+    for (char c : sourceCode)
+    {
+        if (isSkippable(c))
+        {
+            if (!word.empty())
+            {
+                words.push_back(word);
+                word.clear();
+            }
+        }
+        else if (c == '(' || c == ')' || c == '+' || c == '-' || c == '/' || c == '*')
+        {
+            if (!word.empty())
+            {
+                words.push_back(word);
+                word.clear();
+            }
+            word += c;
+            words.push_back(word);
+            word.clear();
+        }
+        else{
+            word += c;
+        }
+    }
+    if (!word.empty())
+    {
+        words.push_back(word);
+        word.clear();
+    }
+    return words;
+}
 
 
 // function takes source code as input and returns a vector containing tokens
@@ -97,22 +133,8 @@ std::vector<Token> tokenize(const std::string &sourceCode)
     // variable to store the tokens
     std::vector<Token> tokens;
 
-    // store temp word to put into src 
-    std::string currWord;
-
-    // making stream from the string
-    std::stringstream ss(sourceCode);
-
     // variable that splits each string with a space in a vector
-    std::vector<std::string> src;
-
-    // this while loop takes every word split with space from ss 
-    // and puts the value into src
-    while (getline(ss, currWord, ' ')) 
-    {
-        src.push_back(currWord);
-        currWord.clear();
-    }
+    std::vector<std::string> src = splitString(sourceCode);
 
     // START WITH IMPLEMENTING SHIFT
     while (!src.empty()) 
@@ -238,14 +260,13 @@ int main(int argc, char *argv[])
     // something like a placeholder for start.
     for (int i = 0; i < tokens.size(); ++i)
     {
-        std::cout << "Value:" << tokens[i].value << " Type: " << tokens[i].type << std::endl;
+        std::cout << "Value: " << tokens[i].value << " Type: " << tokens[i].type << std::endl;
     }
 
 }
 
 // Tommorow:
-// most likley a problem with the splitString so maybe change it
-// "specific problem is when splitting stuff like ( and foo"
+// add comment: to lexer and another variable if I want
 
 // I want to make my programming language:
 // - not have any identifier like let or string or whatever like Python, this is great practice to be able to implement tests and such
