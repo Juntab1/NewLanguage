@@ -182,18 +182,23 @@ std::vector<Token> tokenize(const std::string &sourceCode)
             if (isSingleComment(src.front()))
             {
                 std::cout << "comment if statement" << std::endl;
-                std::string nextWord = shift(src);
-                bool foundEnd = false;
-                while(!src.empty() && foundEnd == false)
+                if (!src.empty())
                 {
-                    for (int i = 0; i < nextWord.length(); i++)
+                    std::string nextWord = shift(src);
+                    std::cout << nextWord << std::endl;
+                    std::cout << shift(src) << std::endl;
+                    bool foundEnd = false;
+                    while(!src.empty() && foundEnd == false)
                     {
-                        if (nextWord.at(i) == '\n')
+                        for (int i = 0; i < nextWord.length(); i++)
                         {
-                            foundEnd = true;
+                            if (nextWord.at(i) == '\n')
+                            {
+                                foundEnd = true;
+                            }
                         }
+                        nextWord = shift(src);
                     }
-                    nextWord = shift(src);
                 }
             }
             // multicharacter token
@@ -301,6 +306,7 @@ int main(int argc, char *argv[])
 
 // Tommorow:
 // add comment: to lexer and another variable if I want
+//          need to create a global index to go through the src correctly 
 
 // I want to make my programming language:
 // - not have any identifier like let or string or whatever like Python, this is great practice to be able to implement tests and such
