@@ -74,10 +74,17 @@ bool isNumber(const std::string &str)
     return true;
 }
 
+bool isSingleComment(const std::string &str)
+{
+    std::cout << "comment function" << std::endl;
+    return str.compare("comment:") || str.compare("comment:\n");
+}
+
 // checking if we can actually skip the character
+// not taking in '/n' to be able to know when we are hadling a new line for commenting
 bool isSkippable(char ch)
 {
-    return ch == ' ' || ch == '\t' || ch == '\n';
+    return ch == ' ' || ch == '\t';
 }
 
 // Find if it is a recognizable identifier
@@ -95,6 +102,16 @@ std::vector<std::string> splitString(const std::string &sourceCode){
 
     for (char c : sourceCode)
     {
+        // test to see if it prints new line or not
+        if (c == '\n')
+        {
+            std::cout << "new line" << std::endl;
+        }
+        else
+        {
+            std::cout << c << std::endl;
+        }
+
         if (isSkippable(c))
         {
             if (!word.empty())
@@ -162,8 +179,25 @@ std::vector<Token> tokenize(const std::string &sourceCode)
         }
         else
         {
+            if (isSingleComment(src.front()))
+            {
+                std::cout << "comment if statement" << std::endl;
+                std::string nextWord = shift(src);
+                bool foundEnd = false;
+                while(!src.empty() && foundEnd == false)
+                {
+                    for (int i = 0; i < nextWord.length(); i++)
+                    {
+                        if (nextWord.at(i) == '\n')
+                        {
+                            foundEnd = true;
+                        }
+                    }
+                    nextWord = shift(src);
+                }
+            }
             // multicharacter token
-            if (isNumber(src.front()))
+            else if (isNumber(src.front()))
             {
                 // variable to store multiple digit number
                 std::string number;
@@ -193,7 +227,7 @@ std::vector<Token> tokenize(const std::string &sourceCode)
                 }
             }
             // using first character
-            else if(isSkippable(src.front()[0]))
+            else if (isSkippable(src.front()[0]))
             {
                 shift(src);
             }
