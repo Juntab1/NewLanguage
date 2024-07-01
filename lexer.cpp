@@ -104,12 +104,13 @@ std::vector<std::string> splitString(const std::string &sourceCode){
     for (size_t i = 0; i < sourceCode.size(); ++i)
     {
         char c = sourceCode[i];
-
+        // std::cout << c << std::endl;
         if (comment)
         {
             if (c == '\n')
             {
-                comment = true;
+                // std::cout << "turn comment off" << std::endl;
+                comment = false;
             }
             continue;
         }
@@ -163,7 +164,7 @@ std::vector<Token> tokenize(const std::string &sourceCode)
     // START WITH IMPLEMENTING SHIFT
     while (!src.empty()) 
     {
-        std::cout << "Current token: " << src.front() << std::endl; // Debug: Current token
+        // std::cout << "Current token: " << src.front() << std::endl;
 
         if (src.front() == "(") 
         {
@@ -283,7 +284,7 @@ int main(int argc, char *argv[])
     std::vector<Token> tokens = tokenize(sourceCode);
     // we are using pre increment for i because the first value might not be important because it can be 
     // something like a placeholder for start.
-    std::cout << tokens.size() << std::endl;
+    // std::cout << tokens.size() << std::endl;
     for (int i = 0; i < tokens.size(); ++i)
     {
         std::cout << "Value: " << tokens[i].value << " Type: " << tokens[i].type << std::endl;
