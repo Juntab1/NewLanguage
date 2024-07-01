@@ -17,10 +17,14 @@ enum TokenType
     Number,
     Identifier,
     Equals,
+    CurlyOpenParen,
+    CurlyCloseParen,
     OpenParen,
     CloseParen,
     BinaryOperator,
     Let,
+    If,
+    Print
 };
 
 // groups together variables under Token name
@@ -94,6 +98,8 @@ ReservedIdentifierMap reservedIdentifier;
 void INIT_RESERVED_IDENTIFIER()
 {
     reservedIdentifier["let"] = TokenType::Let;
+    reservedIdentifier["if"] = TokenType::If;
+    reservedIdentifier["p"] = TokenType::Print;
 }
 
 std::vector<std::string> splitString(const std::string &sourceCode){
@@ -123,7 +129,7 @@ std::vector<std::string> splitString(const std::string &sourceCode){
                 word.clear();
             }
         }
-        else if (c == '(' || c == ')' || c == '+' || c == '-' || c == '/' || c == '*')
+        else if (c == '(' || c == ')' || c == '{' || c == '}' || c == '+' || c == '-' || c == '/' || c == '*')
         {
             if (!word.empty())
             {
@@ -175,6 +181,16 @@ std::vector<Token> tokenize(const std::string &sourceCode)
         else if (src.front() == ")")
         {
             tokens.push_back(Token::token(shift(src), TokenType::CloseParen));
+
+        }
+        else if (src.front() == "{")
+        {
+            tokens.push_back(Token::token(shift(src), TokenType::CurlyOpenParen));
+
+        }
+        else if (src.front() == "}")
+        {
+            tokens.push_back(Token::token(shift(src), TokenType::CurlyCloseParen));
 
         }
         else if (src.front() == "=")
@@ -293,8 +309,16 @@ int main(int argc, char *argv[])
 }
 
 // Tommorow:
-// add comment: to lexer and another variable if I want
-//          need to create a global index to go through the src correctly 
+// figure out how to implement a parser now, AVL tree?
+
+/* Current Progress:
+    - able to define variables
+    - if statement
+    - print variables
+    - use comments
+*/
+
+
 
 // I want to make my programming language:
 // - not have any identifier like let or string or whatever like Python, this is great practice to be able to implement tests and such
