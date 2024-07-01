@@ -77,14 +77,14 @@ bool isNumber(const std::string &str)
 bool isSingleComment(const std::string &str)
 {
     std::cout << "comment function" << std::endl;
-    return str.compare("comment:") || str.compare("comment:\n");
+    return str.rfind("comment:", 0) == 0;
 }
 
 // checking if we can actually skip the character
 // not taking in '/n' to be able to know when we are hadling a new line for commenting
 bool isSkippable(char ch)
 {
-    return ch == ' ' || ch == '\t';
+    return ch == ' ' || ch == '\t' || ch == '\n';
 }
 
 // Find if it is a recognizable identifier
@@ -99,17 +99,19 @@ void INIT_RESERVED_IDENTIFIER()
 std::vector<std::string> splitString(const std::string &sourceCode){
     std::vector<std::string> words;
     std::string word;
+    bool comment = false;
 
-    for (char c : sourceCode)
+    for (size_t i = 0; i < sourceCode.size(); ++i)
     {
-        // test to see if it prints new line or not
-        if (c == '\n')
+        char c = sourceCode[i];
+
+        if (comment)
         {
-            std::cout << "new line" << std::endl;
-        }
-        else
-        {
-            std::cout << c << std::endl;
+            if (c == '\n')
+            {
+                comment = true;
+            }
+            continue;
         }
 
         if (isSkippable(c))
@@ -133,9 +135,14 @@ std::vector<std::string> splitString(const std::string &sourceCode){
         }
         else{
             word += c;
+            if (word == "comment:")
+            {
+                comment = true;
+                word.clear();
+            }
         }
     }
-    if (!word.empty())
+    if (!word.empty() && !comment)
     {
         words.push_back(word);
         word.clear();
@@ -156,6 +163,8 @@ std::vector<Token> tokenize(const std::string &sourceCode)
     // START WITH IMPLEMENTING SHIFT
     while (!src.empty()) 
     {
+        std::cout << "Current token: " << src.front() << std::endl; // Debug: Current token
+
         if (src.front() == "(") 
         {
             // shift is executed before the push_back
@@ -179,30 +188,8 @@ std::vector<Token> tokenize(const std::string &sourceCode)
         }
         else
         {
-            if (isSingleComment(src.front()))
-            {
-                std::cout << "comment if statement" << std::endl;
-                if (!src.empty())
-                {
-                    std::string nextWord = shift(src);
-                    std::cout << nextWord << std::endl;
-                    std::cout << shift(src) << std::endl;
-                    bool foundEnd = false;
-                    while(!src.empty() && foundEnd == false)
-                    {
-                        for (int i = 0; i < nextWord.length(); i++)
-                        {
-                            if (nextWord.at(i) == '\n')
-                            {
-                                foundEnd = true;
-                            }
-                        }
-                        nextWord = shift(src);
-                    }
-                }
-            }
             // multicharacter token
-            else if (isNumber(src.front()))
+            if (isNumber(src.front()))
             {
                 // variable to store multiple digit number
                 std::string number;
@@ -238,8 +225,7 @@ std::vector<Token> tokenize(const std::string &sourceCode)
             }
             else
             {
-                std::cout << src.front() << std::endl;
-                std::cout << "Unrecognized character found! " << std::endl;
+                std::cout << "Unrecognized character found! " << src.front() << std::endl;
                 exit(1);
             }
 
@@ -297,6 +283,7 @@ int main(int argc, char *argv[])
     std::vector<Token> tokens = tokenize(sourceCode);
     // we are using pre increment for i because the first value might not be important because it can be 
     // something like a placeholder for start.
+    std::cout << tokens.size() << std::endl;
     for (int i = 0; i < tokens.size(); ++i)
     {
         std::cout << "Value: " << tokens[i].value << " Type: " << tokens[i].type << std::endl;
