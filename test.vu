@@ -1,3 +1,6 @@
-let x = 45 + (foo * bar)
+let x = 45 + (foo * bar) {}
+let 
+if {}
+p ()
 comment: this is a comment
 dfdfdfdfd
